@@ -1,0 +1,6 @@
+# directories
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+/node_modules
