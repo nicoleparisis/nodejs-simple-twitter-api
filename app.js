@@ -49,11 +49,12 @@ app.use(function(err, req, res, next) {
       })
     }
     var tweetsWithHashTags = tweets.filter(function(tweet){   
-        hashTags.forEach(function(tag){
-          if(tweet.hashTags.includes(tag)){
-            searchResults.push(tweet);            
-          }
-        });
+      for (let tag of hashTags) {       
+        if(tweet.hashTags.includes(tag)){
+          searchResults.push(tweet);  
+          break;          
+        }        
+      }
     });
     return res.json(searchResults);
   });
@@ -61,10 +62,6 @@ app.use(function(err, req, res, next) {
     // all users
     app.get("/user", (req, res, next) => {
       res.json(users);
-      return res.status(200).send({
-        success: 'true',
-        message: 'title is required'
-      });
     });   
 
 
