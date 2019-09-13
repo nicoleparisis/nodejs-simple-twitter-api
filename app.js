@@ -48,14 +48,14 @@ app.use(function(err, req, res, next) {
         message: 'you must provide a hash tag'        
       })
     }
-    var tweetsWithHashTags = tweets.filter(function(tweet){   
+    for (let tweet of tweets) {  
       for (let tag of hashTags) {       
         if(tweet.hashTags.includes(tag)){
           searchResults.push(tweet);  
           break;          
         }        
       }
-    });
+    }
     return res.json(searchResults);
   });
 
@@ -71,7 +71,7 @@ app.use(function(err, req, res, next) {
       var foundUsers = users.filter(function(user){
         return user.id == id;
         });
-        if(foundUsers.lenth == 0){
+        if(foundUsers.length == 0){
             return res.json(null);
         }
         return res.json(foundUsers[0])
@@ -82,7 +82,7 @@ app.use(function(err, req, res, next) {
         var foundTweets = tweets.filter(function(tweet){
             return tweet.userId == userId;
         });
-        if(foundTweets.lenth == 0){
+        if(foundTweets.length == 0){
             return res.json([]);
         }
         return res.json(foundTweets);
@@ -91,22 +91,23 @@ app.use(function(err, req, res, next) {
     // create user
     app.post("/user/:user", (req, res, next) => {
       if(users.indexOf(user) > - 1){
-          return // user already exists
+        return res.status(400).send({
+          success: 'false',
+          message: 'user already exists'          
+        })
       }else{
           try{
             users.push(user);
           }catch(e){
             return res.status(500).send({
               success: 'false',
-              message: 'user was not added successfully',
-              todo
+              message: 'user was not added successfully'              
             })
           }
           
           return res.status(201).send({
             success: 'true',
-            message: 'user added successfully',
-            todo
+            message: 'user added successfully'            
           })
       }
     });
@@ -119,7 +120,7 @@ app.use(function(err, req, res, next) {
         var foundTweets = tweets.filter(function(tweets){
             return tweet.id == id;
         });
-        if(foundTweets.lenth == 0){
+        if(foundTweets.length == 0){
             return null;
         }
         return foundTweets[0]
@@ -127,14 +128,13 @@ app.use(function(err, req, res, next) {
     // new tweets
     app.post("/tweet/:tweet", (req, res, next) => {
         if(tweet.indexOf(tweet) > - 1){
-          return res.status(500).send({
+          return res.status(400).send({
             success: 'false',
             message: 'tweet already exists'            
           })
         }else{
             try{
-                tweets.push(tweet);
-                
+                tweets.push(tweet);                
             }catch(e){
               return res.status(500).send({
                 success: 'false',
