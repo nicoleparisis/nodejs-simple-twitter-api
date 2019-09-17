@@ -39,8 +39,7 @@ app.use(function(err, req, res, next) {
     var tweets = [{id: 1, userId: 1, text: "Hello", hashTags: ['car', 'boat']}, {id: 2, userId: 2, text: "Hello!", hashTags: ['vacation', 'beach']}];
 
   // search tweets
-  app.get("/search", (req, res, next) => {
-    var searchResults = [];
+  app.get("/search", (req, res, next) => {    
     var hashTags = req.query.hashTags;
     if(hashTags == null || hashTags.length == 0){
       return res.status(400).send({
@@ -48,14 +47,15 @@ app.use(function(err, req, res, next) {
         message: 'you must provide a hash tag'        
       })
     }
-    for (let tweet of tweets) {  
-      for (let tag of hashTags) {       
-        if(tweet.hashTags.includes(tag)){
-          searchResults.push(tweet);  
-          break;          
-        }        
+    var searchResults = tweets.map((tweet) => {
+      for (let tag of hashTags) {            
+        if(tweet.hashTags.includes(tag)){          
+          return tweet;          
+        }
+        return null;      
       }
-    }
+    }).filter(sr => sr !== null);
+    
     return res.json(searchResults);
   });
 
